@@ -85,8 +85,20 @@ func (p *Proposer) SendProposal(proposal Proposal) {
 		return
 	}
 
+	clientNonce, err := p.client.PendingNonceAt(context.Background(), common.HexToAddress(p.address))
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	nonce := p.GetNonce()
+
+	if clientNonce > nonce {
+		nonce = clientNonce
+	}
+
 	auth, _ := bind.NewKeyedTransactorWithChainID(p.privateKey, p.foreignChainID)
-	auth.Nonce = big.NewInt(int64(p.GetNonce()))
+	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)
 	auth.GasLimit = uint64(0)
 	auth.GasPrice = gasPrice
