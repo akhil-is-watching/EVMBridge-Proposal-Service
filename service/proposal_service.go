@@ -84,10 +84,15 @@ func (service *ProposalService) ListenForDeposit(startBlock uint64) {
 				endBlock = latestBlock
 			}
 
-			it, _ := service.listenBridge.FilterDepositEvent(&bind.FilterOpts{
+			it, err := service.listenBridge.FilterDepositEvent(&bind.FilterOpts{
 				Start: blockNumber,
 				End:   &endBlock,
 			})
+
+			if err != nil {
+				log.Println("Error getting latest block:", err)
+				continue
+			}
 
 			for it.Next() {
 				event := it.Event
