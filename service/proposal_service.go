@@ -118,10 +118,9 @@ func (service *ProposalService) ListenForDeposit(startBlock uint64) {
 				service.cache.Add(event.Raw.TxHash)
 			}
 			blockNumber = endBlock + 1 // Move to the next block after the last processed block
-			time.Sleep(5 * time.Second)
 		}
 
 		startBlock = latestBlock
-		time.Sleep(20 * time.Second)
+		time.Sleep(10 * time.Second)
 	}
 }
